@@ -287,8 +287,12 @@ nvdewarper_parse_surface_attributes (Gstnvdewarper * nvdewarper,
           surfaceParams.dstPrincipalPoint[1] = principal_point[1];
       }
       g_free(principal_point);
-    }
-    else {
+    } else if (!g_strcmp0 (*key, CONFIG_GROUP_DEWARPER_MY_TEST_VAR)) {
+      surfaceParams.my_test_var =
+          g_key_file_get_double (key_file, group,
+              CONFIG_GROUP_DEWARPER_MY_TEST_VAR, &error);
+      CHECK_ERROR (error);
+    } else {
       g_print ("%s: Unknown key '%s' for group [%s]\n", cfg_file_path, *key,
           group);
     }

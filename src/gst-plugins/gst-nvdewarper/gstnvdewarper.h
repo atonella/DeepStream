@@ -111,6 +111,8 @@ typedef struct _NvDewarperParams
 
   gfloat dstFocalLength[FOCAL_LENGTH_SIZE];     /**< destination surface focal length */
   gfloat dstPrincipalPoint[2];                  /**< destination surface principal point */
+  
+  guint my_test_var;
 } NvDewarperParams;
 
 /** Data structure contaning dewarping parameters for all the output surfaces */
@@ -184,6 +186,8 @@ struct _Gstnvdewarper
   GstBuffer * out_gst_buf;                    /**< Pointer to the output buffer */
 
   NvDewarperPriv *priv;                       /**< Pointer to private data structure contaning dewarping parameters for all the output surfaces */
+
+  guint my_control_var;
 };
 
 /** GStreamer boilerplate. */

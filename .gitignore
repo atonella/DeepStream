@@ -41,3 +41,7 @@ artifacts/
 *.zip
 .mcp.json
 .claude/settings.local.json
+
+.vscode
+*.o
+*.sp

@@ -75,6 +75,8 @@
 #define CONFIG_GROUP_DEWARPER_SURFACE_SRC_X0 "src-x0"                       /**< source principal point X */
 #define CONFIG_GROUP_DEWARPER_SURFACE_SRC_Y0 "src-y0"                       /**< source principal point Y */
 
+#define CONFIG_GROUP_DEWARPER_MY_TEST_VAR "my-test-var"
+
 /** Destination focal length : Useful to introduce zoom-in and zoom-out effect */
 #define CONFIG_GROUP_DEWARPER_SURFACE_DST_FOCAL_LENGTH "dst-focal-length"
 /** Destination principal point corresponding to ""dst-focal-length" */

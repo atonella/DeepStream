@@ -56,6 +56,8 @@ GST_DEBUG_CATEGORY_STATIC (gst_nvdewarper_debug);
 #define DEFAULT_NUM_OUTPUT_BUFFERS  4
 #define MAX_BUFFERS 4
 
+#define DEFAULT_MY_TEST_VAR 42
+
 #ifndef PACKAGE
 #define PACKAGE "nvdewarper"
 #endif
@@ -126,6 +128,7 @@ enum
   PROP_NVBUF_MEMORY_TYPE,
   PROP_INTERPOLATION_METHOD,
   PROP_SILENT,
+  PROP_MY_CONTROL_VAR,
 };
 
 static void gst_nvdewarper_finalize (GObject * object);
@@ -613,7 +616,7 @@ gst_nvdewarper_csv_init (Gstnvdewarper * nvdewarper)
 
       memset (&surfaceParams, 0, sizeof (surfaceParams));
       surfaceParams.control = 0.6f; // For pushbroom projection set default control = 0.6 to maintain legacy
-
+      surfaceParams.my_test_var = DEFAULT_MY_TEST_VAR;
       //taking value for spot index 0
       if (nvdewarper->spotCSVParser->getNvSpotCSVFields (source_id, surf_idx, 0,
               &fields) != 0) {
@@ -1230,6 +1233,14 @@ gst_nvdewarper_class_init (GstnvdewarperClass * klass)
   PROP_NVBUF_MEMORY_TYPE_INSTALL (gobject_class);
   PROP_INTERPOLATION_METHOD_INSTALL(gobject_class);
 
+  g_object_class_install_property (gobject_class, PROP_MY_CONTROL_VAR,
+    g_param_spec_uint ("my-control-var", "A variable to control my-test-var",
+        "A variable to control my-test-var",
+        0, G_MAXUINT, 0,
+        GParamFlags (G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS |
+            GST_PARAM_MUTABLE_READY)));
+  std::cout << "\n[debug] im in *_class_init()\n";
+
   gst_element_class_set_details_simple (gstelement_class,
       "nvdewarper",
       "nvdewarper",
@@ -1278,6 +1289,7 @@ gst_nvdewarper_init (Gstnvdewarper * nvdewarper)
   nvdewarper->num_aisle_views = 0;
 
   nvdewarper->priv = new NvDewarperPriv;
+  nvdewarper->my_control_var = 0; // no control
 }
 
 static void
@@ -1365,6 +1377,20 @@ gst_nvdewarper_set_property (GObject * object, guint prop_id,
         abort ();
       }
       break;
+    case PROP_MY_CONTROL_VAR:
+      {
+        auto &vec = nvdewarper->priv->vecDewarpSurface;
+        if (nvdewarper->source_id < vec.size ()) {
+          vec.at (nvdewarper->source_id).my_test_var += g_value_get_uint (value);
+          std::cout << "\n[debug] Added " << g_value_get_uint (value)
+                    << " to my-test-var. New val: "
+                    << vec.at (nvdewarper->source_id).my_test_var << std::endl;
+        } else {
+          GST_WARNING_OBJECT (nvdewarper, "No surface for source_id %u yet",
+              nvdewarper->source_id);
+        }
+      }
+  break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1405,6 +1431,11 @@ gst_nvdewarper_get_property (GObject * object, guint prop_id,
     case PROP_INTERPOLATION_METHOD:
       g_value_set_enum (value, nvdewarper->interpolation_method);
       break;
+    // control var only writeable
+    // case PROP_MY_CONTROL_VAR:
+    //   g_value_set_uint(value, nvdewarper->my_test_var);
+    //   std::cout << "\n[debug] Got value " << nvdewarper->mytestvar << " of mytestvar" << std::endl;
+    //   break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
