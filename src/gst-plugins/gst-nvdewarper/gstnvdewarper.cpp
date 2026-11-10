@@ -1494,6 +1494,50 @@ gst_nvdewarper_get_property (GObject * object, guint prop_id,
     case PROP_INTERPOLATION_METHOD:
       g_value_set_enum (value, nvdewarper->interpolation_method);
       break;
+    case PROP_ACTIVE_SURFACE:
+      g_value_set_uint(value, nvdewarper->active_surface);
+      break;
+    case PROP_YAW:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].yaw);
+      else
+        g_print("Can't read yaw angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface); // TODO: oder 0 returnen?
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_PITCH:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].pitch);
+      else
+        g_print("Can't read pitch angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_ROLL:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].roll);
+      else
+        g_print("Can't read roll angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_TOP_ANGLE:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].top_angle);
+      else
+        g_print("Can't read top angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_BOTTOM_ANGLE:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].bottom_angle);
+      else
+        g_print("Can't read bottom angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
