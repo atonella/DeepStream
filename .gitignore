@@ -42,6 +42,7 @@ artifacts/
 .mcp.json
 .claude/settings.local.json
 
+# atonella
 .vscode
 *.o
-*.sp
+*.so
