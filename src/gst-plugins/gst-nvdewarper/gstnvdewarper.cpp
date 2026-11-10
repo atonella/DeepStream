@@ -1411,6 +1411,49 @@ gst_nvdewarper_set_property (GObject * object, guint prop_id,
         abort ();
       }
       break;
+    case PROP_ACTIVE_SURFACE:
+      nvdewarper->active_surface = g_value_get_uint(value);
+      break;
+    case PROP_YAW:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].yaw = g_value_get_float(value);
+      else
+        g_print("Can't update yaw angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_PITCH:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].pitch = g_value_get_float(value);
+      else
+        g_print("Can't update pitch angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_ROLL:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].roll = g_value_get_float(value);
+      else
+        g_print("Can't update roll angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_TOP_ANGLE:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].top_angle = g_value_get_float(value);
+      else
+        g_print("Can't update top angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_BOTTOM_ANGLE:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].bottom_angle = g_value_get_float(value);
+      else
+        g_print("Can't update bottom angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
