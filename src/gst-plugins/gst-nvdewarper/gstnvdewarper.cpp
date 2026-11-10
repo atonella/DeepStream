@@ -646,7 +646,10 @@ gst_nvdewarper_csv_init (Gstnvdewarper * nvdewarper)
       nvdewarper->spot_surf_index[i] = surf_idx;
 
       surfaceParams.projection_type = NVDS_META_SURFACE_FISH_PUSHBROOM;
+
+      g_mutex_lock(&nvdewarper->params_lock);
       nvdewarper->priv->vecDewarpSurface.push_back (surfaceParams);
+      g_mutex_unlock(&nvdewarper->params_lock);
     }
     nvdewarper->spotCSVInit = 1;
   }
@@ -683,7 +686,9 @@ gst_nvdewarper_csv_init (Gstnvdewarper * nvdewarper)
       nvdewarper->aisle_surf_index[i] = surf_idx;
 
       surfaceParams.projection_type = NVDS_META_SURFACE_FISH_VERTCYL;
+      g_mutex_lock(&nvdewarper->params_lock);
       nvdewarper->priv->vecDewarpSurface.push_back (surfaceParams);
+      g_mutex_unlock(&nvdewarper->params_lock);
     }
     nvdewarper->aisleCSVInit = 1;
   }
@@ -1315,6 +1320,7 @@ gst_nvdewarper_init (Gstnvdewarper * nvdewarper)
   nvdewarper->num_aisle_views = 0;
 
   nvdewarper->priv = new NvDewarperPriv;
+  g_mutex_init(&nvdewarper->params_lock);
 }
 
 static void
@@ -1344,11 +1350,13 @@ gst_nvdewarper_finalize (GObject * object)
     nvdewarper->output = NULL;
   }
 
+  g_mutex_lock(&nvdewarper->params_lock);
   nvdewarper->priv->vecDewarpSurface.clear ();
   if (nvdewarper->priv) {
     delete nvdewarper->priv;
     nvdewarper->priv = NULL;
   }
+  g_mutex_unlock(&nvdewarper->params_lock);
   if (nvdewarper->spotCSVParser) {
     delete nvdewarper->spotCSVParser;
     nvdewarper->spotCSVParser = NULL;
@@ -1361,6 +1369,7 @@ gst_nvdewarper_finalize (GObject * object)
   }
   if (nvdewarper->config_file)
     g_free (nvdewarper->config_file);
+  g_mutex_clear(&nvdewarper->params_lock);
 }
 
 static void

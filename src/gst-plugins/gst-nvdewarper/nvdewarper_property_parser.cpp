@@ -296,7 +296,9 @@ nvdewarper_parse_surface_attributes (Gstnvdewarper * nvdewarper,
 
   surfaceParams.isValid = 1;
   surfaceParams.id = index;
+  g_mutex_lock(&nvdewarper->params_lock);
   nvdewarper->priv->vecDewarpSurface.push_back(surfaceParams);
+  g_mutex_unlock(&nvdewarper->params_lock);
 
   ret = TRUE;
 done:
