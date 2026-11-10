@@ -184,6 +184,7 @@ struct _Gstnvdewarper
   GstBuffer * out_gst_buf;                    /**< Pointer to the output buffer */
 
   NvDewarperPriv *priv;                       /**< Pointer to private data structure contaning dewarping parameters for all the output surfaces */
+  guint active_surface;                       /**< Index of surface that gets updated during runtime */
 };
 
 /** GStreamer boilerplate. */

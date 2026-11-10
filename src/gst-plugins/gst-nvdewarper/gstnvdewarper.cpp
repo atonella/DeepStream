@@ -126,6 +126,12 @@ enum
   PROP_NVBUF_MEMORY_TYPE,
   PROP_INTERPOLATION_METHOD,
   PROP_SILENT,
+  PROP_ACTIVE_SURFACE,
+  PROP_YAW,
+  PROP_PITCH,
+  PROP_ROLL,
+  PROP_TOP_ANGLE,
+  PROP_BOTTOM_ANGLE,
 };
 
 static void gst_nvdewarper_finalize (GObject * object);
@@ -1227,6 +1233,37 @@ gst_nvdewarper_class_init (GstnvdewarperClass * klass)
       g_param_spec_string ("dewarper-lib-version", "Dewarper Library Version",
           "Dewarper Library Version",
           NULL, (GParamFlags) (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS)));
+
+  g_object_class_install_property (gobject_class, PROP_ACTIVE_SURFACE,
+      g_param_spec_uint ("active-surface", "Select surface to update",
+          "Select surface to update", 0 , MAX_BUFFERS, 0,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
+  g_object_class_install_property (gobject_class, PROP_YAW,
+      g_param_spec_float ("yaw", "Yaw angle in degrees",
+          "Yaw angle in degrees", 0.f, 360.f, 0.f,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
+  g_object_class_install_property (gobject_class, PROP_PITCH,
+      g_param_spec_float ("pitch", "Pitch angle in degrees",
+          "Pitch angle in degrees", 0.f, 360.f, 90.f,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
+  g_object_class_install_property (gobject_class, PROP_YAW,
+      g_param_spec_float ("roll", "Roll angle in degrees",
+          "Roll angle in degrees", 0.f, 360.f, 0.f,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
+  g_object_class_install_property (gobject_class, PROP_TOP_ANGLE,
+      g_param_spec_float ("top-angle", "Top angle in degrees",
+          "Top angle in degrees", -180.f, 180.f, 0.f,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
+  g_object_class_install_property (gobject_class, PROP_BOTTOM_ANGLE,
+      g_param_spec_float ("bottom-angle", "Bottom angle in degrees",
+          "Bottom angle in degrees", -180.f, 180.f, 0.f,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
   PROP_NVBUF_MEMORY_TYPE_INSTALL (gobject_class);
   PROP_INTERPOLATION_METHOD_INSTALL(gobject_class);
 
