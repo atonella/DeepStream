@@ -1186,6 +1186,7 @@ gst_nvdewarper_class_init (GstnvdewarperClass * klass)
 
   gstbasetransform_class->passthrough_on_same_caps = FALSE;
 
+  // 9 porperties are installed, 3 are derived = 12 properties in total
   g_object_class_install_property (gobject_class, PROP_SILENT,
       g_param_spec_boolean ("silent", "Silent", "Produce verbose output ?",
           FALSE, G_PARAM_READWRITE));
@@ -1333,6 +1334,7 @@ gst_nvdewarper_set_property (GObject * object, guint prop_id,
   Gstnvdewarper *nvdewarper = GST_NVDEWARPER (object);
 
   switch (prop_id) {
+    // all the *writable* properties below are viewable in gst-inspect-1.0 output
     case PROP_SILENT:
       nvdewarper->silent = g_value_get_boolean (value);
       break;
@@ -1368,6 +1370,10 @@ gst_nvdewarper_set_property (GObject * object, guint prop_id,
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
+    // following properties are not here, but in gst-inspect-1.0 output:
+    //   dewarper-lib-version is only readable and from Gstnvdewarper
+    //   name, parent come  from GstObject
+    //   qos          comes from GstBaseTransform
   }
 }
 
@@ -1378,6 +1384,7 @@ gst_nvdewarper_get_property (GObject * object, guint prop_id,
   Gstnvdewarper *nvdewarper = GST_NVDEWARPER (object);
 
   switch (prop_id) {
+    // Additionally to the setter, we get access to dewarper-lib-version as it's read-only
     case PROP_SILENT:
       g_value_set_boolean (value, nvdewarper->silent);
       break;
