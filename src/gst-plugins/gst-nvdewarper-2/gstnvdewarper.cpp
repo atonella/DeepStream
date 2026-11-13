@@ -1254,7 +1254,7 @@ gst_nvdewarper_class_init (GstnvdewarperClass * klass)
           "Pitch angle in degrees", 0.f, 360.f, 90.f,
           (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
 
-  g_object_class_install_property (gobject_class, PROP_YAW,
+  g_object_class_install_property (gobject_class, PROP_ROLL,
       g_param_spec_float ("roll", "Roll angle in degrees",
           "Roll angle in degrees", 0.f, 360.f, 0.f,
           (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
