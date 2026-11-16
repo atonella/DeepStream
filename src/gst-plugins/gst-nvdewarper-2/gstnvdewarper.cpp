@@ -1460,7 +1460,7 @@ gst_nvdewarper_set_property (GObject * object, guint prop_id,
         g_print("Can't update bottom angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
       g_mutex_unlock(&nvdewarper->params_lock);
       break;
-    case PROP_DST_FOCAL_LENGTH
+    case PROP_DST_FOCAL_LENGTH:
       g_mutex_lock(&nvdewarper->params_lock);
       if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
         nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].dstFocalLength[0] = g_value_get_float(value); // TODO: add support for array with two floats (len=2)
