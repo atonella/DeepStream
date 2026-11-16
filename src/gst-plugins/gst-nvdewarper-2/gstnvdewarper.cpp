@@ -132,6 +132,7 @@ enum
   PROP_ROLL,
   PROP_TOP_ANGLE,
   PROP_BOTTOM_ANGLE,
+  PROP_DST_FOCAL_LENGTH,
 };
 
 static void gst_nvdewarper_finalize (GObject * object);
@@ -1269,6 +1270,11 @@ gst_nvdewarper_class_init (GstnvdewarperClass * klass)
           "Bottom angle in degrees", -180.f, 180.f, 0.f,
           (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
 
+  g_object_class_install_property (gobject_class, PROP_DST_FOCAL_LENGTH,
+      g_param_spec_float ("dst-focal-length", "Destination image focal length in pixel/rad.",
+          "Destination image focal length in pixel/rad.", 0.f, G_MAXFLOAT, 28.f,
+          (GParamFlags) (GST_PARAM_MUTABLE_PLAYING | GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE)));
+
   PROP_NVBUF_MEMORY_TYPE_INSTALL (gobject_class);
   PROP_INTERPOLATION_METHOD_INSTALL(gobject_class);
 
@@ -1454,6 +1460,14 @@ gst_nvdewarper_set_property (GObject * object, guint prop_id,
         g_print("Can't update bottom angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
       g_mutex_unlock(&nvdewarper->params_lock);
       break;
+    case PROP_DST_FOCAL_LENGTH
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].dstFocalLength[0] = g_value_get_float(value); // TODO: add support for array with two floats (len=2)
+      else
+        g_print("Can't update destination focal length on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1535,6 +1549,14 @@ gst_nvdewarper_get_property (GObject * object, guint prop_id,
         g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].bottom_angle);
       else
         g_print("Can't read bottom angle on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
+      g_mutex_unlock(&nvdewarper->params_lock);
+      break;
+    case PROP_DST_FOCAL_LENGTH:
+      g_mutex_lock(&nvdewarper->params_lock);
+      if (nvdewarper->active_surface < nvdewarper->priv->vecDewarpSurface.size())
+        g_value_set_float(value, nvdewarper->priv->vecDewarpSurface[nvdewarper->active_surface].dstFocalLength[0]); // TODO: add support for array with two floats (len=2)
+      else
+        g_print("Can't read destination focal length on surface #%u. This can happen if the surface is not instantiated yet.", nvdewarper->active_surface);
       g_mutex_unlock(&nvdewarper->params_lock);
       break;
 
